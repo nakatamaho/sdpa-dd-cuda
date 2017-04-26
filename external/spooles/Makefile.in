@@ -321,6 +321,7 @@ work/$(PATCH_STAMP): work/$(EXTRACT_STAMP)
 	cd $(abs_builddir)/work/internal; patch -p0 < ../../patches/patch-Tree+src+makeGlobalLib
 	cd $(abs_builddir)/work/internal; patch -p0 < ../../patches/patch-Utilities+src+makeGlobalLib
 	cd $(abs_builddir)/work/internal; patch -p0 < ../../patches/patch-makefile
+	cd $(abs_builddir)/work/internal; patch -p0 < ../../patches/patch-timings.h
 	touch $(abs_builddir)/work/$(PATCH_STAMP)
 
 work/$(CONFIGURE_STAMP): work/$(PATCH_STAMP)
