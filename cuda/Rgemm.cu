@@ -117,6 +117,8 @@ void Is_cuda_Rgemm_error(cudaError_t rc, const char *mes, mpackint m, mpackint n
 #include "Rgemm_TT_0.cu"
 #include "Rgemm_TT_p.cu"
 
+static double ops_counter = 0.0;
+
 void Rgemm(const char *transa, const char *transb, mpackint m, mpackint n, mpackint k, dd_real alpha, dd_real * A, mpackint lda, dd_real * B, mpackint ldb, dd_real beta, dd_real * C, mpackint ldc)
 {
     mpackint i, j, nota, notb, nrowa, nrowb, ncola, info;
@@ -226,5 +228,9 @@ void Rgemm(const char *transa, const char *transb, mpackint m, mpackint n, mpack
         Is_cuda_Rgemm_error(rc, "cudaFree B error", m, n, k, lda, ldb, ldc);
     rc = cudaFree(Cdev);
         Is_cuda_Rgemm_error(rc, "cudaFree C error", m, n, k, lda, ldb, ldc);
+
+    ops_counter += (double)m*(double)n*(double)k;
+    std::cerr << "total flops " << ops_counter << "\n";
+
     return;
 }

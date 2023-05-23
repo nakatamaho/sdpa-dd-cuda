@@ -1,7 +1,7 @@
 bin_PROGRAMS = sdpa_dd
 
 #nVidia settings
-NVCCFLAGS = -gencode arch=compute_20,code=sm_20 -m64 -O3 --ptxas-options=-v -I/usr/local/cuda/include -I./mpack -I. -I$(QD_INCLUDEDIR)
+NVCCFLAGS = -gencode arch=compute_80,code=sm_80 -m64 -O3 --ptxas-options=-v -I/usr/local/cuda/include -I./mpack -I. -I$(QD_INCLUDEDIR)
 if ENABLE_SLOPPY_MUL
 NVCCFLAGS += -DSLOPPY_MUL
 endif
@@ -14,6 +14,9 @@ CUDA_LIBS = -L/usr/local/cuda/lib64 -L/usr/local/cuda/lib -lcudart
 SUFFIXES= .cu .o
 .cu.o:
 	$(NVCC) -o $@ -c $< $(NVCCFLAGS)
+
+AUTOMAKE_OPTIONS = subdir-objects
+
 
 sdpa_dd_SOURCES = sdpa_chordal.cpp sdpa_dataset.cpp sdpa_io.cpp \
 sdpa_jordan.cpp sdpa_linear.cpp sdpa_main.cpp sdpa_newton.cpp sdpa_parts.cpp \
