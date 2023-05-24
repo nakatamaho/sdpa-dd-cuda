@@ -52,7 +52,6 @@ void Rgemm(const char *transa, const char *transb, mpackint m, mpackint n, mpack
       std::cout << "!!!!!! set n_min = " << n_min << "\n";
       __firstcall__ = 0;
     }
-
     
     nota = Mlsame_dd(transa, "N");
     notb = Mlsame_dd(transb, "N");
@@ -112,7 +111,8 @@ void Rgemm(const char *transa, const char *transb, mpackint m, mpackint n, mpack
     }
 
     unsigned long int mnk = (unsigned long int)m*(unsigned long int)n*(unsigned long int)k;
-    if (((n_min == 0) && n != m) || mnk <= n_min) {
+    //    if (((n_min == 0) && n != m) || mnk <= n_min) {
+    if (mnk <= n_min) {
     } else { 
       Rgemm_X(transa, transb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
       return;

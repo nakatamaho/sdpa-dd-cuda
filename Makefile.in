@@ -103,7 +103,7 @@ bin_PROGRAMS = sdpa_dd$(EXEEXT)
 @ENABLE_CUDA_FALSE@			mpack/Rpotrf.cpp mpack/Rsyrk.cpp mpack/Rtrsm.cpp 
 
 @SYSTEM_MPACK_FALSE@am__append_5 = \
-@SYSTEM_MPACK_FALSE@mpack/Rdot.cpp  mpack/Raxpy.cpp \
+@SYSTEM_MPACK_FALSE@mpack/Rdot_omp.cpp  mpack/Raxpy_omp.cpp \
 @SYSTEM_MPACK_FALSE@mpack/Rtrmm.cpp mpack/Rtrsv.cpp mpack/iMlaenv.cpp\
 @SYSTEM_MPACK_FALSE@mpack/Rlamch.cpp mpack/Rlascl.cpp mpack/Rsytrd.cpp mpack/Rsterf.cpp\
 @SYSTEM_MPACK_FALSE@mpack/Rorgtr.cpp mpack/Rlatrd.cpp mpack/Rsyr2k.cpp mpack/Rsytd2.cpp \
@@ -112,7 +112,7 @@ bin_PROGRAMS = sdpa_dd$(EXEEXT)
 @SYSTEM_MPACK_FALSE@mpack/Rsyr2.cpp mpack/Rlassq.cpp mpack/Rorg2l.cpp mpack/Rlarft.cpp\
 @SYSTEM_MPACK_FALSE@mpack/Rlarfb.cpp mpack/Rorg2r.cpp mpack/Rnrm2.cpp mpack/Rlarf.cpp \
 @SYSTEM_MPACK_FALSE@mpack/Rger.cpp mpack/Mxerbla.cpp mpack/Rpotf2.cpp \
-@SYSTEM_MPACK_FALSE@mpack/Mlsame.cpp mpack/Rscal.cpp mpack/Rcopy.cpp mpack/Rgemv.cpp \
+@SYSTEM_MPACK_FALSE@mpack/Mlsame.cpp mpack/Rscal.cpp mpack/Rcopy_omp.cpp mpack/Rgemv.cpp \
 @SYSTEM_MPACK_FALSE@mpack/Rtrmv.cpp mpack/Rsteqr.cpp mpack/Rlaset.cpp mpack/Rlaev2.cpp \
 @SYSTEM_MPACK_FALSE@mpack/Rlasr.cpp mpack/Rlartg.cpp mpack/Rswap.cpp mpack/Rsyev.cpp \
 @SYSTEM_MPACK_FALSE@mpack/Rlansy.cpp mpack/Mutils.cpp \
@@ -142,23 +142,23 @@ am__sdpa_dd_SOURCES_DIST = sdpa_chordal.cpp sdpa_dataset.cpp \
 	mpack/Rgemm_NT_omp.cpp mpack/Rgemm_TN_omp.cpp \
 	mpack/Rgemm_TT_omp.cpp cuda/Rgemm.cu cuda/dd_real_cuda.h \
 	mpack/Rpotrf.cpp mpack/Rsyrk.cpp mpack/Rtrsm.cpp \
-	mpack/Rdot.cpp mpack/Raxpy.cpp mpack/Rtrmm.cpp mpack/Rtrsv.cpp \
-	mpack/iMlaenv.cpp mpack/Rlamch.cpp mpack/Rlascl.cpp \
-	mpack/Rsytrd.cpp mpack/Rsterf.cpp mpack/Rorgtr.cpp \
-	mpack/Rlatrd.cpp mpack/Rsyr2k.cpp mpack/Rsytd2.cpp \
-	mpack/Rlanst.cpp mpack/Rlae2.cpp mpack/Rlapy2.cpp \
-	mpack/Rlasrt.cpp mpack/Rorgql.cpp mpack/Rorgqr.cpp \
-	mpack/Rsymv.cpp mpack/Rlarfg.cpp mpack/Rsyr2.cpp \
-	mpack/Rlassq.cpp mpack/Rorg2l.cpp mpack/Rlarft.cpp \
-	mpack/Rlarfb.cpp mpack/Rorg2r.cpp mpack/Rnrm2.cpp \
-	mpack/Rlarf.cpp mpack/Rger.cpp mpack/Mxerbla.cpp \
-	mpack/Rpotf2.cpp mpack/Mlsame.cpp mpack/Rscal.cpp \
-	mpack/Rcopy.cpp mpack/Rgemv.cpp mpack/Rtrmv.cpp \
-	mpack/Rsteqr.cpp mpack/Rlaset.cpp mpack/Rlaev2.cpp \
-	mpack/Rlasr.cpp mpack/Rlartg.cpp mpack/Rswap.cpp \
-	mpack/Rsyev.cpp mpack/Rlansy.cpp mpack/Mutils.cpp \
-	mpack/mblas_dd.h mpack/mlapack_dd.h mpack/mpack_config.h \
-	mpack/mutils_dd.h
+	mpack/Rdot_omp.cpp mpack/Raxpy_omp.cpp mpack/Rtrmm.cpp \
+	mpack/Rtrsv.cpp mpack/iMlaenv.cpp mpack/Rlamch.cpp \
+	mpack/Rlascl.cpp mpack/Rsytrd.cpp mpack/Rsterf.cpp \
+	mpack/Rorgtr.cpp mpack/Rlatrd.cpp mpack/Rsyr2k.cpp \
+	mpack/Rsytd2.cpp mpack/Rlanst.cpp mpack/Rlae2.cpp \
+	mpack/Rlapy2.cpp mpack/Rlasrt.cpp mpack/Rorgql.cpp \
+	mpack/Rorgqr.cpp mpack/Rsymv.cpp mpack/Rlarfg.cpp \
+	mpack/Rsyr2.cpp mpack/Rlassq.cpp mpack/Rorg2l.cpp \
+	mpack/Rlarft.cpp mpack/Rlarfb.cpp mpack/Rorg2r.cpp \
+	mpack/Rnrm2.cpp mpack/Rlarf.cpp mpack/Rger.cpp \
+	mpack/Mxerbla.cpp mpack/Rpotf2.cpp mpack/Mlsame.cpp \
+	mpack/Rscal.cpp mpack/Rcopy_omp.cpp mpack/Rgemv.cpp \
+	mpack/Rtrmv.cpp mpack/Rsteqr.cpp mpack/Rlaset.cpp \
+	mpack/Rlaev2.cpp mpack/Rlasr.cpp mpack/Rlartg.cpp \
+	mpack/Rswap.cpp mpack/Rsyev.cpp mpack/Rlansy.cpp \
+	mpack/Mutils.cpp mpack/mblas_dd.h mpack/mlapack_dd.h \
+	mpack/mpack_config.h mpack/mutils_dd.h
 am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_CUDA_TRUE@am__objects_1 = mpack/sdpa_dd-Rgemm_omp.$(OBJEXT) \
 @ENABLE_CUDA_TRUE@	mpack/sdpa_dd-Rgemm_NN_omp.$(OBJEXT) \
@@ -177,8 +177,8 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @ENABLE_CUDA_FALSE@	mpack/sdpa_dd-Rpotrf.$(OBJEXT) \
 @ENABLE_CUDA_FALSE@	mpack/sdpa_dd-Rsyrk.$(OBJEXT) \
 @ENABLE_CUDA_FALSE@	mpack/sdpa_dd-Rtrsm.$(OBJEXT)
-@SYSTEM_MPACK_FALSE@am__objects_3 = mpack/sdpa_dd-Rdot.$(OBJEXT) \
-@SYSTEM_MPACK_FALSE@	mpack/sdpa_dd-Raxpy.$(OBJEXT) \
+@SYSTEM_MPACK_FALSE@am__objects_3 = mpack/sdpa_dd-Rdot_omp.$(OBJEXT) \
+@SYSTEM_MPACK_FALSE@	mpack/sdpa_dd-Raxpy_omp.$(OBJEXT) \
 @SYSTEM_MPACK_FALSE@	mpack/sdpa_dd-Rtrmm.$(OBJEXT) \
 @SYSTEM_MPACK_FALSE@	mpack/sdpa_dd-Rtrsv.$(OBJEXT) \
 @SYSTEM_MPACK_FALSE@	mpack/sdpa_dd-iMlaenv.$(OBJEXT) \
@@ -211,7 +211,7 @@ am__dirstamp = $(am__leading_dot)dirstamp
 @SYSTEM_MPACK_FALSE@	mpack/sdpa_dd-Rpotf2.$(OBJEXT) \
 @SYSTEM_MPACK_FALSE@	mpack/sdpa_dd-Mlsame.$(OBJEXT) \
 @SYSTEM_MPACK_FALSE@	mpack/sdpa_dd-Rscal.$(OBJEXT) \
-@SYSTEM_MPACK_FALSE@	mpack/sdpa_dd-Rcopy.$(OBJEXT) \
+@SYSTEM_MPACK_FALSE@	mpack/sdpa_dd-Rcopy_omp.$(OBJEXT) \
 @SYSTEM_MPACK_FALSE@	mpack/sdpa_dd-Rgemv.$(OBJEXT) \
 @SYSTEM_MPACK_FALSE@	mpack/sdpa_dd-Rtrmv.$(OBJEXT) \
 @SYSTEM_MPACK_FALSE@	mpack/sdpa_dd-Rsteqr.$(OBJEXT) \
@@ -267,9 +267,9 @@ am__depfiles_remade = ./$(DEPDIR)/sdpa_dd-sdpa_chordal.Po \
 	mpack/$(DEPDIR)/sdpa_dd-Mlsame.Po \
 	mpack/$(DEPDIR)/sdpa_dd-Mutils.Po \
 	mpack/$(DEPDIR)/sdpa_dd-Mxerbla.Po \
-	mpack/$(DEPDIR)/sdpa_dd-Raxpy.Po \
-	mpack/$(DEPDIR)/sdpa_dd-Rcopy.Po \
-	mpack/$(DEPDIR)/sdpa_dd-Rdot.Po \
+	mpack/$(DEPDIR)/sdpa_dd-Raxpy_omp.Po \
+	mpack/$(DEPDIR)/sdpa_dd-Rcopy_omp.Po \
+	mpack/$(DEPDIR)/sdpa_dd-Rdot_omp.Po \
 	mpack/$(DEPDIR)/sdpa_dd-Rgemm_NN_omp.Po \
 	mpack/$(DEPDIR)/sdpa_dd-Rgemm_NT_omp.Po \
 	mpack/$(DEPDIR)/sdpa_dd-Rgemm_TN_omp.Po \
@@ -690,9 +690,9 @@ mpack/sdpa_dd-Rsyrk.$(OBJEXT): mpack/$(am__dirstamp) \
 	mpack/$(DEPDIR)/$(am__dirstamp)
 mpack/sdpa_dd-Rtrsm.$(OBJEXT): mpack/$(am__dirstamp) \
 	mpack/$(DEPDIR)/$(am__dirstamp)
-mpack/sdpa_dd-Rdot.$(OBJEXT): mpack/$(am__dirstamp) \
+mpack/sdpa_dd-Rdot_omp.$(OBJEXT): mpack/$(am__dirstamp) \
 	mpack/$(DEPDIR)/$(am__dirstamp)
-mpack/sdpa_dd-Raxpy.$(OBJEXT): mpack/$(am__dirstamp) \
+mpack/sdpa_dd-Raxpy_omp.$(OBJEXT): mpack/$(am__dirstamp) \
 	mpack/$(DEPDIR)/$(am__dirstamp)
 mpack/sdpa_dd-Rtrmm.$(OBJEXT): mpack/$(am__dirstamp) \
 	mpack/$(DEPDIR)/$(am__dirstamp)
@@ -758,7 +758,7 @@ mpack/sdpa_dd-Mlsame.$(OBJEXT): mpack/$(am__dirstamp) \
 	mpack/$(DEPDIR)/$(am__dirstamp)
 mpack/sdpa_dd-Rscal.$(OBJEXT): mpack/$(am__dirstamp) \
 	mpack/$(DEPDIR)/$(am__dirstamp)
-mpack/sdpa_dd-Rcopy.$(OBJEXT): mpack/$(am__dirstamp) \
+mpack/sdpa_dd-Rcopy_omp.$(OBJEXT): mpack/$(am__dirstamp) \
 	mpack/$(DEPDIR)/$(am__dirstamp)
 mpack/sdpa_dd-Rgemv.$(OBJEXT): mpack/$(am__dirstamp) \
 	mpack/$(DEPDIR)/$(am__dirstamp)
@@ -808,9 +808,9 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@mpack/$(DEPDIR)/sdpa_dd-Mlsame.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@mpack/$(DEPDIR)/sdpa_dd-Mutils.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@mpack/$(DEPDIR)/sdpa_dd-Mxerbla.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@mpack/$(DEPDIR)/sdpa_dd-Raxpy.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@mpack/$(DEPDIR)/sdpa_dd-Rcopy.Po@am__quote@ # am--include-marker
-@AMDEP_TRUE@@am__include@ @am__quote@mpack/$(DEPDIR)/sdpa_dd-Rdot.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@mpack/$(DEPDIR)/sdpa_dd-Raxpy_omp.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@mpack/$(DEPDIR)/sdpa_dd-Rcopy_omp.Po@am__quote@ # am--include-marker
+@AMDEP_TRUE@@am__include@ @am__quote@mpack/$(DEPDIR)/sdpa_dd-Rdot_omp.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@mpack/$(DEPDIR)/sdpa_dd-Rgemm_NN_omp.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@mpack/$(DEPDIR)/sdpa_dd-Rgemm_NT_omp.Po@am__quote@ # am--include-marker
 @AMDEP_TRUE@@am__include@ @am__quote@mpack/$(DEPDIR)/sdpa_dd-Rgemm_TN_omp.Po@am__quote@ # am--include-marker
@@ -1134,33 +1134,33 @@ mpack/sdpa_dd-Rtrsm.obj: mpack/Rtrsm.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rtrsm.obj `if test -f 'mpack/Rtrsm.cpp'; then $(CYGPATH_W) 'mpack/Rtrsm.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rtrsm.cpp'; fi`
 
-mpack/sdpa_dd-Rdot.o: mpack/Rdot.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rdot.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rdot.Tpo -c -o mpack/sdpa_dd-Rdot.o `test -f 'mpack/Rdot.cpp' || echo '$(srcdir)/'`mpack/Rdot.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rdot.Tpo mpack/$(DEPDIR)/sdpa_dd-Rdot.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rdot.cpp' object='mpack/sdpa_dd-Rdot.o' libtool=no @AMDEPBACKSLASH@
+mpack/sdpa_dd-Rdot_omp.o: mpack/Rdot_omp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rdot_omp.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rdot_omp.Tpo -c -o mpack/sdpa_dd-Rdot_omp.o `test -f 'mpack/Rdot_omp.cpp' || echo '$(srcdir)/'`mpack/Rdot_omp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rdot_omp.Tpo mpack/$(DEPDIR)/sdpa_dd-Rdot_omp.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rdot_omp.cpp' object='mpack/sdpa_dd-Rdot_omp.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rdot.o `test -f 'mpack/Rdot.cpp' || echo '$(srcdir)/'`mpack/Rdot.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rdot_omp.o `test -f 'mpack/Rdot_omp.cpp' || echo '$(srcdir)/'`mpack/Rdot_omp.cpp
 
-mpack/sdpa_dd-Rdot.obj: mpack/Rdot.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rdot.obj -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rdot.Tpo -c -o mpack/sdpa_dd-Rdot.obj `if test -f 'mpack/Rdot.cpp'; then $(CYGPATH_W) 'mpack/Rdot.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rdot.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rdot.Tpo mpack/$(DEPDIR)/sdpa_dd-Rdot.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rdot.cpp' object='mpack/sdpa_dd-Rdot.obj' libtool=no @AMDEPBACKSLASH@
+mpack/sdpa_dd-Rdot_omp.obj: mpack/Rdot_omp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rdot_omp.obj -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rdot_omp.Tpo -c -o mpack/sdpa_dd-Rdot_omp.obj `if test -f 'mpack/Rdot_omp.cpp'; then $(CYGPATH_W) 'mpack/Rdot_omp.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rdot_omp.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rdot_omp.Tpo mpack/$(DEPDIR)/sdpa_dd-Rdot_omp.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rdot_omp.cpp' object='mpack/sdpa_dd-Rdot_omp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rdot.obj `if test -f 'mpack/Rdot.cpp'; then $(CYGPATH_W) 'mpack/Rdot.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rdot.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rdot_omp.obj `if test -f 'mpack/Rdot_omp.cpp'; then $(CYGPATH_W) 'mpack/Rdot_omp.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rdot_omp.cpp'; fi`
 
-mpack/sdpa_dd-Raxpy.o: mpack/Raxpy.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Raxpy.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Raxpy.Tpo -c -o mpack/sdpa_dd-Raxpy.o `test -f 'mpack/Raxpy.cpp' || echo '$(srcdir)/'`mpack/Raxpy.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Raxpy.Tpo mpack/$(DEPDIR)/sdpa_dd-Raxpy.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Raxpy.cpp' object='mpack/sdpa_dd-Raxpy.o' libtool=no @AMDEPBACKSLASH@
+mpack/sdpa_dd-Raxpy_omp.o: mpack/Raxpy_omp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Raxpy_omp.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Raxpy_omp.Tpo -c -o mpack/sdpa_dd-Raxpy_omp.o `test -f 'mpack/Raxpy_omp.cpp' || echo '$(srcdir)/'`mpack/Raxpy_omp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Raxpy_omp.Tpo mpack/$(DEPDIR)/sdpa_dd-Raxpy_omp.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Raxpy_omp.cpp' object='mpack/sdpa_dd-Raxpy_omp.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Raxpy.o `test -f 'mpack/Raxpy.cpp' || echo '$(srcdir)/'`mpack/Raxpy.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Raxpy_omp.o `test -f 'mpack/Raxpy_omp.cpp' || echo '$(srcdir)/'`mpack/Raxpy_omp.cpp
 
-mpack/sdpa_dd-Raxpy.obj: mpack/Raxpy.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Raxpy.obj -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Raxpy.Tpo -c -o mpack/sdpa_dd-Raxpy.obj `if test -f 'mpack/Raxpy.cpp'; then $(CYGPATH_W) 'mpack/Raxpy.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Raxpy.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Raxpy.Tpo mpack/$(DEPDIR)/sdpa_dd-Raxpy.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Raxpy.cpp' object='mpack/sdpa_dd-Raxpy.obj' libtool=no @AMDEPBACKSLASH@
+mpack/sdpa_dd-Raxpy_omp.obj: mpack/Raxpy_omp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Raxpy_omp.obj -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Raxpy_omp.Tpo -c -o mpack/sdpa_dd-Raxpy_omp.obj `if test -f 'mpack/Raxpy_omp.cpp'; then $(CYGPATH_W) 'mpack/Raxpy_omp.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Raxpy_omp.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Raxpy_omp.Tpo mpack/$(DEPDIR)/sdpa_dd-Raxpy_omp.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Raxpy_omp.cpp' object='mpack/sdpa_dd-Raxpy_omp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Raxpy.obj `if test -f 'mpack/Raxpy.cpp'; then $(CYGPATH_W) 'mpack/Raxpy.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Raxpy.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Raxpy_omp.obj `if test -f 'mpack/Raxpy_omp.cpp'; then $(CYGPATH_W) 'mpack/Raxpy_omp.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Raxpy_omp.cpp'; fi`
 
 mpack/sdpa_dd-Rtrmm.o: mpack/Rtrmm.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rtrmm.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rtrmm.Tpo -c -o mpack/sdpa_dd-Rtrmm.o `test -f 'mpack/Rtrmm.cpp' || echo '$(srcdir)/'`mpack/Rtrmm.cpp
@@ -1610,19 +1610,19 @@ mpack/sdpa_dd-Rscal.obj: mpack/Rscal.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rscal.obj `if test -f 'mpack/Rscal.cpp'; then $(CYGPATH_W) 'mpack/Rscal.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rscal.cpp'; fi`
 
-mpack/sdpa_dd-Rcopy.o: mpack/Rcopy.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rcopy.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rcopy.Tpo -c -o mpack/sdpa_dd-Rcopy.o `test -f 'mpack/Rcopy.cpp' || echo '$(srcdir)/'`mpack/Rcopy.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rcopy.Tpo mpack/$(DEPDIR)/sdpa_dd-Rcopy.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rcopy.cpp' object='mpack/sdpa_dd-Rcopy.o' libtool=no @AMDEPBACKSLASH@
+mpack/sdpa_dd-Rcopy_omp.o: mpack/Rcopy_omp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rcopy_omp.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rcopy_omp.Tpo -c -o mpack/sdpa_dd-Rcopy_omp.o `test -f 'mpack/Rcopy_omp.cpp' || echo '$(srcdir)/'`mpack/Rcopy_omp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rcopy_omp.Tpo mpack/$(DEPDIR)/sdpa_dd-Rcopy_omp.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rcopy_omp.cpp' object='mpack/sdpa_dd-Rcopy_omp.o' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rcopy.o `test -f 'mpack/Rcopy.cpp' || echo '$(srcdir)/'`mpack/Rcopy.cpp
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rcopy_omp.o `test -f 'mpack/Rcopy_omp.cpp' || echo '$(srcdir)/'`mpack/Rcopy_omp.cpp
 
-mpack/sdpa_dd-Rcopy.obj: mpack/Rcopy.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rcopy.obj -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rcopy.Tpo -c -o mpack/sdpa_dd-Rcopy.obj `if test -f 'mpack/Rcopy.cpp'; then $(CYGPATH_W) 'mpack/Rcopy.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rcopy.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rcopy.Tpo mpack/$(DEPDIR)/sdpa_dd-Rcopy.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rcopy.cpp' object='mpack/sdpa_dd-Rcopy.obj' libtool=no @AMDEPBACKSLASH@
+mpack/sdpa_dd-Rcopy_omp.obj: mpack/Rcopy_omp.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rcopy_omp.obj -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rcopy_omp.Tpo -c -o mpack/sdpa_dd-Rcopy_omp.obj `if test -f 'mpack/Rcopy_omp.cpp'; then $(CYGPATH_W) 'mpack/Rcopy_omp.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rcopy_omp.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rcopy_omp.Tpo mpack/$(DEPDIR)/sdpa_dd-Rcopy_omp.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rcopy_omp.cpp' object='mpack/sdpa_dd-Rcopy_omp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rcopy.obj `if test -f 'mpack/Rcopy.cpp'; then $(CYGPATH_W) 'mpack/Rcopy.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rcopy.cpp'; fi`
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rcopy_omp.obj `if test -f 'mpack/Rcopy_omp.cpp'; then $(CYGPATH_W) 'mpack/Rcopy_omp.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rcopy_omp.cpp'; fi`
 
 mpack/sdpa_dd-Rgemv.o: mpack/Rgemv.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rgemv.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rgemv.Tpo -c -o mpack/sdpa_dd-Rgemv.o `test -f 'mpack/Rgemv.cpp' || echo '$(srcdir)/'`mpack/Rgemv.cpp
@@ -2136,9 +2136,9 @@ distclean: distclean-recursive
 	-rm -f mpack/$(DEPDIR)/sdpa_dd-Mlsame.Po
 	-rm -f mpack/$(DEPDIR)/sdpa_dd-Mutils.Po
 	-rm -f mpack/$(DEPDIR)/sdpa_dd-Mxerbla.Po
-	-rm -f mpack/$(DEPDIR)/sdpa_dd-Raxpy.Po
-	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rcopy.Po
-	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rdot.Po
+	-rm -f mpack/$(DEPDIR)/sdpa_dd-Raxpy_omp.Po
+	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rcopy_omp.Po
+	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rdot_omp.Po
 	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rgemm_NN_omp.Po
 	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rgemm_NT_omp.Po
 	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rgemm_TN_omp.Po
@@ -2247,9 +2247,9 @@ maintainer-clean: maintainer-clean-recursive
 	-rm -f mpack/$(DEPDIR)/sdpa_dd-Mlsame.Po
 	-rm -f mpack/$(DEPDIR)/sdpa_dd-Mutils.Po
 	-rm -f mpack/$(DEPDIR)/sdpa_dd-Mxerbla.Po
-	-rm -f mpack/$(DEPDIR)/sdpa_dd-Raxpy.Po
-	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rcopy.Po
-	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rdot.Po
+	-rm -f mpack/$(DEPDIR)/sdpa_dd-Raxpy_omp.Po
+	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rcopy_omp.Po
+	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rdot_omp.Po
 	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rgemm_NN_omp.Po
 	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rgemm_NT_omp.Po
 	-rm -f mpack/$(DEPDIR)/sdpa_dd-Rgemm_TN_omp.Po

@@ -37,7 +37,7 @@ endif
 
 if !SYSTEM_MPACK
 sdpa_dd_SOURCES += \
-mpack/Rdot.cpp  mpack/Raxpy.cpp \
+mpack/Rdot_omp.cpp  mpack/Raxpy_omp.cpp \
 mpack/Rtrmm.cpp mpack/Rtrsv.cpp mpack/iMlaenv.cpp\
 mpack/Rlamch.cpp mpack/Rlascl.cpp mpack/Rsytrd.cpp mpack/Rsterf.cpp\
 mpack/Rorgtr.cpp mpack/Rlatrd.cpp mpack/Rsyr2k.cpp mpack/Rsytd2.cpp \
@@ -46,7 +46,7 @@ mpack/Rorgql.cpp mpack/Rorgqr.cpp mpack/Rsymv.cpp mpack/Rlarfg.cpp\
 mpack/Rsyr2.cpp mpack/Rlassq.cpp mpack/Rorg2l.cpp mpack/Rlarft.cpp\
 mpack/Rlarfb.cpp mpack/Rorg2r.cpp mpack/Rnrm2.cpp mpack/Rlarf.cpp \
 mpack/Rger.cpp mpack/Mxerbla.cpp mpack/Rpotf2.cpp \
-mpack/Mlsame.cpp mpack/Rscal.cpp mpack/Rcopy.cpp mpack/Rgemv.cpp \
+mpack/Mlsame.cpp mpack/Rscal.cpp mpack/Rcopy_omp.cpp mpack/Rgemv.cpp \
 mpack/Rtrmv.cpp mpack/Rsteqr.cpp mpack/Rlaset.cpp mpack/Rlaev2.cpp \
 mpack/Rlasr.cpp mpack/Rlartg.cpp mpack/Rswap.cpp mpack/Rsyev.cpp \
 mpack/Rlansy.cpp mpack/Mutils.cpp \
