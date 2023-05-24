@@ -35,12 +35,25 @@ void Rgemm_TN_omp(mpackint m, mpackint n, mpackint k, dd_real alpha, dd_real * A
 void Rgemm_NT_omp(mpackint m, mpackint n, mpackint k, dd_real alpha, dd_real * A, mpackint lda, dd_real * B, mpackint ldb, dd_real beta, dd_real * C, mpackint ldc);
 void Rgemm_TT_omp(mpackint m, mpackint n, mpackint k, dd_real alpha, dd_real * A, mpackint lda, dd_real * B, mpackint ldb, dd_real beta, dd_real * C, mpackint ldc);
 
+void Rgemm_X(const char *transa, const char *transb, mpackint m, mpackint n, mpackint k, dd_real alpha, dd_real * A, mpackint lda, dd_real * B, mpackint ldb, dd_real beta, dd_real * C, mpackint ldc);
+
+static int __firstcall__ = 1;
+static unsigned long int n_min = 1000000;
+
 void Rgemm(const char *transa, const char *transb, mpackint m, mpackint n, mpackint k, dd_real alpha, dd_real * A, mpackint lda, dd_real * B, mpackint ldb, dd_real beta, dd_real * C, mpackint ldc)
 {
     mpackint i, j, l, nota, notb, nrowa, ncola, nrowb, info;
     dd_real temp;
     dd_real Zero = 0.0, One = 1.0;
 
+    if (__firstcall__ == 1) {
+      char* n_min_str = getenv("SDPA_CUDA_NMIN");
+      if (n_min_str != NULL) n_min = atol(n_min_str);
+      std::cout << "!!!!!! set n_min = " << n_min << "\n";
+      __firstcall__ = 0;
+    }
+
+    
     nota = Mlsame_dd(transa, "N");
     notb = Mlsame_dd(transb, "N");
     if (nota) {
@@ -97,6 +110,14 @@ void Rgemm(const char *transa, const char *transb, mpackint m, mpackint n, mpack
 	}
 	return;
     }
+
+    unsigned long int mnk = (unsigned long int)m*(unsigned long int)n*(unsigned long int)k;
+    if (((n_min == 0) && n != m) || mnk <= n_min) {
+    } else { 
+      Rgemm_X(transa, transb, m, n, k, alpha, A, lda, B, ldb, beta, C, ldc);
+      return;
+    }
+    
 //Start the operations.
     if (notb) {
 	if (nota) {

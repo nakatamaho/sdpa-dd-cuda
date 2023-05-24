@@ -50,37 +50,14 @@ void Mxerbla_dd(const char *srname, int info);
 #include <cuda_runtime.h>
 #include <cuda.h>
 
-// define texture memory
-texture < int4, 1 > tex_x_double_A;
-texture < int4, 1 > tex_x_double_B;
-
 // matrix block size
 #define Bm  (16)
 #define Bk  (16)
 #define Bn  (16)
 #define Gn   (4)
 
-static
-__inline__ __device__ dd_real fetch_x_A(const int &i)
-{
-    register int4 v = tex1Dfetch(tex_x_double_A, i);
-    register
-    dd_real r;
-    r.x[0] = __hiloint2double(v.y, v.x);
-    r.x[1] = __hiloint2double(v.w, v.z);
-    return r;
-}
-
-static
-__inline__ __device__ dd_real fetch_x_B(const int &i)
-{
-    register int4 v = tex1Dfetch(tex_x_double_B, i);
-    register
-    dd_real r;
-    r.x[0] = __hiloint2double(v.y, v.x);
-    r.x[1] = __hiloint2double(v.w, v.z);
-    return r;
-}
+#define fetch_x_A(i) Adev[(i)]
+#define fetch_x_B(i) Bdev[(i)]
 
 //for alpha*A*B + beta
 __global__ void CalcC_NN0 (dd_real * Adev, dd_real * Bdev, dd_real * Cdev, mpackint m, mpackint n, mpackint k, mpackint lda, mpackint ldb, mpackint ldc, dd_real alpha, dd_real beta);
@@ -119,7 +96,7 @@ void Is_cuda_Rgemm_error(cudaError_t rc, const char *mes, mpackint m, mpackint n
 
 static double ops_counter = 0.0;
 
-void Rgemm(const char *transa, const char *transb, mpackint m, mpackint n, mpackint k, dd_real alpha, dd_real * A, mpackint lda, dd_real * B, mpackint ldb, dd_real beta, dd_real * C, mpackint ldc)
+void Rgemm_X(const char *transa, const char *transb, mpackint m, mpackint n, mpackint k, dd_real alpha, dd_real * A, mpackint lda, dd_real * B, mpackint ldb, dd_real beta, dd_real * C, mpackint ldc)
 {
     mpackint i, j, nota, notb, nrowa, nrowb, ncola, info;
     dd_real temp, Zero, One;

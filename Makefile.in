@@ -91,9 +91,13 @@ host_triplet = @host@
 bin_PROGRAMS = sdpa_dd$(EXEEXT)
 @ENABLE_SLOPPY_MUL_TRUE@am__append_1 = -DSLOPPY_MUL
 @ENABLE_CRAY_ADD_TRUE@am__append_2 = -DCRAY_ADD
-@ENABLE_CUDA_TRUE@am__append_3 = cuda/Rgemm.cu cuda/dd_real_cuda.h \
-@ENABLE_CUDA_TRUE@mpack/Rpotrf.cpp mpack/Rsyrk.cpp mpack/Rtrsm.cpp
-
+@ENABLE_CUDA_TRUE@am__append_3 = mpack/Rgemm_omp.cpp \
+@ENABLE_CUDA_TRUE@	mpack/Rgemm_NN_omp.cpp \
+@ENABLE_CUDA_TRUE@	mpack/Rgemm_NT_omp.cpp \
+@ENABLE_CUDA_TRUE@	mpack/Rgemm_TN_omp.cpp \
+@ENABLE_CUDA_TRUE@	mpack/Rgemm_TT_omp.cpp cuda/Rgemm.cu \
+@ENABLE_CUDA_TRUE@	cuda/dd_real_cuda.h mpack/Rpotrf.cpp \
+@ENABLE_CUDA_TRUE@	mpack/Rsyrk.cpp mpack/Rtrsm.cpp
 @ENABLE_CUDA_FALSE@am__append_4 = mpack/Rgemm_omp.cpp mpack/Rgemm_NN_omp.cpp mpack/Rgemm_NT_omp.cpp \
 @ENABLE_CUDA_FALSE@			mpack/Rgemm_TN_omp.cpp mpack/Rgemm_TT_omp.cpp \
 @ENABLE_CUDA_FALSE@			mpack/Rpotrf.cpp mpack/Rsyrk.cpp mpack/Rtrsm.cpp 
@@ -134,11 +138,11 @@ am__sdpa_dd_SOURCES_DIST = sdpa_chordal.cpp sdpa_dataset.cpp \
 	sdpa_algebra.h sdpa_chordal.h sdpa_dataset.h sdpa_include.h \
 	sdpa_io.h sdpa_jordan.h sdpa_linear.h sdpa_newton.h \
 	sdpa_parts.h sdpa_right.h sdpa_struct.h sdpa_tool.h \
-	cuda/Rgemm.cu cuda/dd_real_cuda.h mpack/Rpotrf.cpp \
-	mpack/Rsyrk.cpp mpack/Rtrsm.cpp mpack/Rgemm_omp.cpp \
-	mpack/Rgemm_NN_omp.cpp mpack/Rgemm_NT_omp.cpp \
-	mpack/Rgemm_TN_omp.cpp mpack/Rgemm_TT_omp.cpp mpack/Rdot.cpp \
-	mpack/Raxpy.cpp mpack/Rtrmm.cpp mpack/Rtrsv.cpp \
+	mpack/Rgemm_omp.cpp mpack/Rgemm_NN_omp.cpp \
+	mpack/Rgemm_NT_omp.cpp mpack/Rgemm_TN_omp.cpp \
+	mpack/Rgemm_TT_omp.cpp cuda/Rgemm.cu cuda/dd_real_cuda.h \
+	mpack/Rpotrf.cpp mpack/Rsyrk.cpp mpack/Rtrsm.cpp \
+	mpack/Rdot.cpp mpack/Raxpy.cpp mpack/Rtrmm.cpp mpack/Rtrsv.cpp \
 	mpack/iMlaenv.cpp mpack/Rlamch.cpp mpack/Rlascl.cpp \
 	mpack/Rsytrd.cpp mpack/Rsterf.cpp mpack/Rorgtr.cpp \
 	mpack/Rlatrd.cpp mpack/Rsyr2k.cpp mpack/Rsytd2.cpp \
@@ -156,7 +160,12 @@ am__sdpa_dd_SOURCES_DIST = sdpa_chordal.cpp sdpa_dataset.cpp \
 	mpack/mblas_dd.h mpack/mlapack_dd.h mpack/mpack_config.h \
 	mpack/mutils_dd.h
 am__dirstamp = $(am__leading_dot)dirstamp
-@ENABLE_CUDA_TRUE@am__objects_1 = cuda/Rgemm.$(OBJEXT) \
+@ENABLE_CUDA_TRUE@am__objects_1 = mpack/sdpa_dd-Rgemm_omp.$(OBJEXT) \
+@ENABLE_CUDA_TRUE@	mpack/sdpa_dd-Rgemm_NN_omp.$(OBJEXT) \
+@ENABLE_CUDA_TRUE@	mpack/sdpa_dd-Rgemm_NT_omp.$(OBJEXT) \
+@ENABLE_CUDA_TRUE@	mpack/sdpa_dd-Rgemm_TN_omp.$(OBJEXT) \
+@ENABLE_CUDA_TRUE@	mpack/sdpa_dd-Rgemm_TT_omp.$(OBJEXT) \
+@ENABLE_CUDA_TRUE@	cuda/Rgemm.$(OBJEXT) \
 @ENABLE_CUDA_TRUE@	mpack/sdpa_dd-Rpotrf.$(OBJEXT) \
 @ENABLE_CUDA_TRUE@	mpack/sdpa_dd-Rsyrk.$(OBJEXT) \
 @ENABLE_CUDA_TRUE@	mpack/sdpa_dd-Rtrsm.$(OBJEXT)
@@ -224,8 +233,10 @@ am_sdpa_dd_OBJECTS = sdpa_dd-sdpa_chordal.$(OBJEXT) \
 sdpa_dd_OBJECTS = $(am_sdpa_dd_OBJECTS)
 am__DEPENDENCIES_1 =
 @SYSTEM_MPACK_FALSE@sdpa_dd_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+@SYSTEM_MPACK_FALSE@	$(am__DEPENDENCIES_1) \
 @SYSTEM_MPACK_FALSE@	$(am__DEPENDENCIES_1)
-@SYSTEM_MPACK_TRUE@sdpa_dd_DEPENDENCIES = $(am__DEPENDENCIES_1)
+@SYSTEM_MPACK_TRUE@sdpa_dd_DEPENDENCIES = $(am__DEPENDENCIES_1) \
+@SYSTEM_MPACK_TRUE@	$(am__DEPENDENCIES_1)
 sdpa_dd_LINK = $(CXXLD) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) $(AM_LDFLAGS) \
 	$(LDFLAGS) -o $@
 AM_V_P = $(am__v_P_@AM_V@)
@@ -465,6 +476,8 @@ MKDIR_P = @MKDIR_P@
 MPACK_INCLUDEDIR = @MPACK_INCLUDEDIR@
 MPACK_LIBDIR = @MPACK_LIBDIR@
 OBJEXT = @OBJEXT@
+OPENMPFLAGS = @OPENMPFLAGS@
+OPENMPLIB = @OPENMPLIB@
 PACKAGE = @PACKAGE@
 PACKAGE_BUGREPORT = @PACKAGE_BUGREPORT@
 PACKAGE_NAME = @PACKAGE_NAME@
@@ -536,7 +549,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 
 #nVidia settings
-NVCCFLAGS = -gencode arch=compute_80,code=sm_80 -m64 -O3 \
+NVCCFLAGS = -gencode arch=compute_70,code=sm_70 -m64 -O3 \
 	--ptxas-options=-v -I/usr/local/cuda/include -I./mpack -I. \
 	-I$(QD_INCLUDEDIR) $(am__append_1) $(am__append_2)
 NVCC = nvcc
@@ -647,26 +660,12 @@ uninstall-binPROGRAMS:
 
 clean-binPROGRAMS:
 	-test -z "$(bin_PROGRAMS)" || rm -f $(bin_PROGRAMS)
-cuda/$(am__dirstamp):
-	@$(MKDIR_P) cuda
-	@: > cuda/$(am__dirstamp)
-cuda/$(DEPDIR)/$(am__dirstamp):
-	@$(MKDIR_P) cuda/$(DEPDIR)
-	@: > cuda/$(DEPDIR)/$(am__dirstamp)
-cuda/Rgemm.$(OBJEXT): cuda/$(am__dirstamp) \
-	cuda/$(DEPDIR)/$(am__dirstamp)
 mpack/$(am__dirstamp):
 	@$(MKDIR_P) mpack
 	@: > mpack/$(am__dirstamp)
 mpack/$(DEPDIR)/$(am__dirstamp):
 	@$(MKDIR_P) mpack/$(DEPDIR)
 	@: > mpack/$(DEPDIR)/$(am__dirstamp)
-mpack/sdpa_dd-Rpotrf.$(OBJEXT): mpack/$(am__dirstamp) \
-	mpack/$(DEPDIR)/$(am__dirstamp)
-mpack/sdpa_dd-Rsyrk.$(OBJEXT): mpack/$(am__dirstamp) \
-	mpack/$(DEPDIR)/$(am__dirstamp)
-mpack/sdpa_dd-Rtrsm.$(OBJEXT): mpack/$(am__dirstamp) \
-	mpack/$(DEPDIR)/$(am__dirstamp)
 mpack/sdpa_dd-Rgemm_omp.$(OBJEXT): mpack/$(am__dirstamp) \
 	mpack/$(DEPDIR)/$(am__dirstamp)
 mpack/sdpa_dd-Rgemm_NN_omp.$(OBJEXT): mpack/$(am__dirstamp) \
@@ -676,6 +675,20 @@ mpack/sdpa_dd-Rgemm_NT_omp.$(OBJEXT): mpack/$(am__dirstamp) \
 mpack/sdpa_dd-Rgemm_TN_omp.$(OBJEXT): mpack/$(am__dirstamp) \
 	mpack/$(DEPDIR)/$(am__dirstamp)
 mpack/sdpa_dd-Rgemm_TT_omp.$(OBJEXT): mpack/$(am__dirstamp) \
+	mpack/$(DEPDIR)/$(am__dirstamp)
+cuda/$(am__dirstamp):
+	@$(MKDIR_P) cuda
+	@: > cuda/$(am__dirstamp)
+cuda/$(DEPDIR)/$(am__dirstamp):
+	@$(MKDIR_P) cuda/$(DEPDIR)
+	@: > cuda/$(DEPDIR)/$(am__dirstamp)
+cuda/Rgemm.$(OBJEXT): cuda/$(am__dirstamp) \
+	cuda/$(DEPDIR)/$(am__dirstamp)
+mpack/sdpa_dd-Rpotrf.$(OBJEXT): mpack/$(am__dirstamp) \
+	mpack/$(DEPDIR)/$(am__dirstamp)
+mpack/sdpa_dd-Rsyrk.$(OBJEXT): mpack/$(am__dirstamp) \
+	mpack/$(DEPDIR)/$(am__dirstamp)
+mpack/sdpa_dd-Rtrsm.$(OBJEXT): mpack/$(am__dirstamp) \
 	mpack/$(DEPDIR)/$(am__dirstamp)
 mpack/sdpa_dd-Rdot.$(OBJEXT): mpack/$(am__dirstamp) \
 	mpack/$(DEPDIR)/$(am__dirstamp)
@@ -1009,48 +1022,6 @@ sdpa_dd-sdpa_tool.obj: sdpa_tool.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o sdpa_dd-sdpa_tool.obj `if test -f 'sdpa_tool.cpp'; then $(CYGPATH_W) 'sdpa_tool.cpp'; else $(CYGPATH_W) '$(srcdir)/sdpa_tool.cpp'; fi`
 
-mpack/sdpa_dd-Rpotrf.o: mpack/Rpotrf.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rpotrf.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rpotrf.Tpo -c -o mpack/sdpa_dd-Rpotrf.o `test -f 'mpack/Rpotrf.cpp' || echo '$(srcdir)/'`mpack/Rpotrf.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rpotrf.Tpo mpack/$(DEPDIR)/sdpa_dd-Rpotrf.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rpotrf.cpp' object='mpack/sdpa_dd-Rpotrf.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rpotrf.o `test -f 'mpack/Rpotrf.cpp' || echo '$(srcdir)/'`mpack/Rpotrf.cpp
-
-mpack/sdpa_dd-Rpotrf.obj: mpack/Rpotrf.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rpotrf.obj -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rpotrf.Tpo -c -o mpack/sdpa_dd-Rpotrf.obj `if test -f 'mpack/Rpotrf.cpp'; then $(CYGPATH_W) 'mpack/Rpotrf.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rpotrf.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rpotrf.Tpo mpack/$(DEPDIR)/sdpa_dd-Rpotrf.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rpotrf.cpp' object='mpack/sdpa_dd-Rpotrf.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rpotrf.obj `if test -f 'mpack/Rpotrf.cpp'; then $(CYGPATH_W) 'mpack/Rpotrf.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rpotrf.cpp'; fi`
-
-mpack/sdpa_dd-Rsyrk.o: mpack/Rsyrk.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rsyrk.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rsyrk.Tpo -c -o mpack/sdpa_dd-Rsyrk.o `test -f 'mpack/Rsyrk.cpp' || echo '$(srcdir)/'`mpack/Rsyrk.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rsyrk.Tpo mpack/$(DEPDIR)/sdpa_dd-Rsyrk.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rsyrk.cpp' object='mpack/sdpa_dd-Rsyrk.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rsyrk.o `test -f 'mpack/Rsyrk.cpp' || echo '$(srcdir)/'`mpack/Rsyrk.cpp
-
-mpack/sdpa_dd-Rsyrk.obj: mpack/Rsyrk.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rsyrk.obj -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rsyrk.Tpo -c -o mpack/sdpa_dd-Rsyrk.obj `if test -f 'mpack/Rsyrk.cpp'; then $(CYGPATH_W) 'mpack/Rsyrk.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rsyrk.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rsyrk.Tpo mpack/$(DEPDIR)/sdpa_dd-Rsyrk.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rsyrk.cpp' object='mpack/sdpa_dd-Rsyrk.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rsyrk.obj `if test -f 'mpack/Rsyrk.cpp'; then $(CYGPATH_W) 'mpack/Rsyrk.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rsyrk.cpp'; fi`
-
-mpack/sdpa_dd-Rtrsm.o: mpack/Rtrsm.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rtrsm.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rtrsm.Tpo -c -o mpack/sdpa_dd-Rtrsm.o `test -f 'mpack/Rtrsm.cpp' || echo '$(srcdir)/'`mpack/Rtrsm.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rtrsm.Tpo mpack/$(DEPDIR)/sdpa_dd-Rtrsm.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rtrsm.cpp' object='mpack/sdpa_dd-Rtrsm.o' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rtrsm.o `test -f 'mpack/Rtrsm.cpp' || echo '$(srcdir)/'`mpack/Rtrsm.cpp
-
-mpack/sdpa_dd-Rtrsm.obj: mpack/Rtrsm.cpp
-@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rtrsm.obj -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rtrsm.Tpo -c -o mpack/sdpa_dd-Rtrsm.obj `if test -f 'mpack/Rtrsm.cpp'; then $(CYGPATH_W) 'mpack/Rtrsm.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rtrsm.cpp'; fi`
-@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rtrsm.Tpo mpack/$(DEPDIR)/sdpa_dd-Rtrsm.Po
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rtrsm.cpp' object='mpack/sdpa_dd-Rtrsm.obj' libtool=no @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rtrsm.obj `if test -f 'mpack/Rtrsm.cpp'; then $(CYGPATH_W) 'mpack/Rtrsm.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rtrsm.cpp'; fi`
-
 mpack/sdpa_dd-Rgemm_omp.o: mpack/Rgemm_omp.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rgemm_omp.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rgemm_omp.Tpo -c -o mpack/sdpa_dd-Rgemm_omp.o `test -f 'mpack/Rgemm_omp.cpp' || echo '$(srcdir)/'`mpack/Rgemm_omp.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rgemm_omp.Tpo mpack/$(DEPDIR)/sdpa_dd-Rgemm_omp.Po
@@ -1120,6 +1091,48 @@ mpack/sdpa_dd-Rgemm_TT_omp.obj: mpack/Rgemm_TT_omp.cpp
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rgemm_TT_omp.cpp' object='mpack/sdpa_dd-Rgemm_TT_omp.obj' libtool=no @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rgemm_TT_omp.obj `if test -f 'mpack/Rgemm_TT_omp.cpp'; then $(CYGPATH_W) 'mpack/Rgemm_TT_omp.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rgemm_TT_omp.cpp'; fi`
+
+mpack/sdpa_dd-Rpotrf.o: mpack/Rpotrf.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rpotrf.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rpotrf.Tpo -c -o mpack/sdpa_dd-Rpotrf.o `test -f 'mpack/Rpotrf.cpp' || echo '$(srcdir)/'`mpack/Rpotrf.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rpotrf.Tpo mpack/$(DEPDIR)/sdpa_dd-Rpotrf.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rpotrf.cpp' object='mpack/sdpa_dd-Rpotrf.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rpotrf.o `test -f 'mpack/Rpotrf.cpp' || echo '$(srcdir)/'`mpack/Rpotrf.cpp
+
+mpack/sdpa_dd-Rpotrf.obj: mpack/Rpotrf.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rpotrf.obj -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rpotrf.Tpo -c -o mpack/sdpa_dd-Rpotrf.obj `if test -f 'mpack/Rpotrf.cpp'; then $(CYGPATH_W) 'mpack/Rpotrf.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rpotrf.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rpotrf.Tpo mpack/$(DEPDIR)/sdpa_dd-Rpotrf.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rpotrf.cpp' object='mpack/sdpa_dd-Rpotrf.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rpotrf.obj `if test -f 'mpack/Rpotrf.cpp'; then $(CYGPATH_W) 'mpack/Rpotrf.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rpotrf.cpp'; fi`
+
+mpack/sdpa_dd-Rsyrk.o: mpack/Rsyrk.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rsyrk.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rsyrk.Tpo -c -o mpack/sdpa_dd-Rsyrk.o `test -f 'mpack/Rsyrk.cpp' || echo '$(srcdir)/'`mpack/Rsyrk.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rsyrk.Tpo mpack/$(DEPDIR)/sdpa_dd-Rsyrk.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rsyrk.cpp' object='mpack/sdpa_dd-Rsyrk.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rsyrk.o `test -f 'mpack/Rsyrk.cpp' || echo '$(srcdir)/'`mpack/Rsyrk.cpp
+
+mpack/sdpa_dd-Rsyrk.obj: mpack/Rsyrk.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rsyrk.obj -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rsyrk.Tpo -c -o mpack/sdpa_dd-Rsyrk.obj `if test -f 'mpack/Rsyrk.cpp'; then $(CYGPATH_W) 'mpack/Rsyrk.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rsyrk.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rsyrk.Tpo mpack/$(DEPDIR)/sdpa_dd-Rsyrk.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rsyrk.cpp' object='mpack/sdpa_dd-Rsyrk.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rsyrk.obj `if test -f 'mpack/Rsyrk.cpp'; then $(CYGPATH_W) 'mpack/Rsyrk.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rsyrk.cpp'; fi`
+
+mpack/sdpa_dd-Rtrsm.o: mpack/Rtrsm.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rtrsm.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rtrsm.Tpo -c -o mpack/sdpa_dd-Rtrsm.o `test -f 'mpack/Rtrsm.cpp' || echo '$(srcdir)/'`mpack/Rtrsm.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rtrsm.Tpo mpack/$(DEPDIR)/sdpa_dd-Rtrsm.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rtrsm.cpp' object='mpack/sdpa_dd-Rtrsm.o' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rtrsm.o `test -f 'mpack/Rtrsm.cpp' || echo '$(srcdir)/'`mpack/Rtrsm.cpp
+
+mpack/sdpa_dd-Rtrsm.obj: mpack/Rtrsm.cpp
+@am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rtrsm.obj -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rtrsm.Tpo -c -o mpack/sdpa_dd-Rtrsm.obj `if test -f 'mpack/Rtrsm.cpp'; then $(CYGPATH_W) 'mpack/Rtrsm.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rtrsm.cpp'; fi`
+@am__fastdepCXX_TRUE@	$(AM_V_at)$(am__mv) mpack/$(DEPDIR)/sdpa_dd-Rtrsm.Tpo mpack/$(DEPDIR)/sdpa_dd-Rtrsm.Po
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	$(AM_V_CXX)source='mpack/Rtrsm.cpp' object='mpack/sdpa_dd-Rtrsm.obj' libtool=no @AMDEPBACKSLASH@
+@AMDEP_TRUE@@am__fastdepCXX_FALSE@	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) @AMDEPBACKSLASH@
+@am__fastdepCXX_FALSE@	$(AM_V_CXX@am__nodep@)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -c -o mpack/sdpa_dd-Rtrsm.obj `if test -f 'mpack/Rtrsm.cpp'; then $(CYGPATH_W) 'mpack/Rtrsm.cpp'; else $(CYGPATH_W) '$(srcdir)/mpack/Rtrsm.cpp'; fi`
 
 mpack/sdpa_dd-Rdot.o: mpack/Rdot.cpp
 @am__fastdepCXX_TRUE@	$(AM_V_CXX)$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(sdpa_dd_CXXFLAGS) $(CXXFLAGS) -MT mpack/sdpa_dd-Rdot.o -MD -MP -MF mpack/$(DEPDIR)/sdpa_dd-Rdot.Tpo -c -o mpack/sdpa_dd-Rdot.o `test -f 'mpack/Rdot.cpp' || echo '$(srcdir)/'`mpack/Rdot.cpp

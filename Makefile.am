@@ -1,7 +1,7 @@
 bin_PROGRAMS = sdpa_dd
 
 #nVidia settings
-NVCCFLAGS = -gencode arch=compute_80,code=sm_80 -m64 -O3 --ptxas-options=-v -I/usr/local/cuda/include -I./mpack -I. -I$(QD_INCLUDEDIR)
+NVCCFLAGS = -gencode arch=compute_70,code=sm_70 -m64 -O3 --ptxas-options=-v -I/usr/local/cuda/include -I./mpack -I. -I$(QD_INCLUDEDIR)
 if ENABLE_SLOPPY_MUL
 NVCCFLAGS += -DSLOPPY_MUL
 endif
@@ -25,6 +25,8 @@ sdpa_include.h sdpa_io.h sdpa_jordan.h sdpa_linear.h sdpa_newton.h \
 sdpa_parts.h sdpa_right.h sdpa_struct.h sdpa_tool.h
 
 if ENABLE_CUDA
+sdpa_dd_SOURCES += mpack/Rgemm_omp.cpp mpack/Rgemm_NN_omp.cpp mpack/Rgemm_NT_omp.cpp \
+			mpack/Rgemm_TN_omp.cpp mpack/Rgemm_TT_omp.cpp
 sdpa_dd_SOURCES += cuda/Rgemm.cu cuda/dd_real_cuda.h \
 mpack/Rpotrf.cpp mpack/Rsyrk.cpp mpack/Rtrsm.cpp
 else

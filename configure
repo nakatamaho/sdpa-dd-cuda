@@ -627,6 +627,8 @@ MPACK_LIBDIR
 SYSTEM_MPACK_FALSE
 SYSTEM_MPACK_TRUE
 CXXCPP
+OPENMPFLAGS
+OPENMPLIB
 QD_INCLUDEDIR
 QD_LIBDIR
 SPOOLES_INCLUDEDIR
@@ -766,6 +768,10 @@ enable_shared
 enable_sloppy_mul
 enable_cray_add
 enable_cuda
+enable_openmp
+with_openmplib
+with_openmpflag
+with_openmpthreads
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1420,6 +1426,8 @@ Optional Features:
   --enable-sloppy_mul      Enables sloppy mul (faster and less accurate)
   --enable-cray_add      Enables cray style add (faster and less accurate)
   --enable-cuda      Enables CUDA (C2050 and/or later) a lot faster!
+  --enable-openmp       Enables openmp
+
 
 Optional Packages:
   --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
@@ -1433,6 +1441,9 @@ Optional Packages:
   --with-system-mpack      Use mpack already on system
   --with-mpack-includedir    Gives mpack include dir you use(e.g., /usr/local/include).
   --with-mpack-libdir    Gives mpack lib dir you use(e.g., /usr/local/lib).
+  --with-openmplib    Gives openmplib
+  --with-openmpflag    Gives openmpflag
+  --with-openmpthread   Gives openmpthreads
 
 Some influential environment variables:
   CC          C compiler command
@@ -4590,6 +4601,36 @@ else
 fi
 
 
+# Check whether --enable-openmp was given.
+if test "${enable_openmp+set}" = set; then :
+  enableval=$enable_openmp; WITH_OPENMP=yes
+fi
+
+
+
+# Check whether --with-openmplib was given.
+if test "${with_openmplib+set}" = set; then :
+  withval=$with_openmplib; OPENMPLIB=$withval
+
+fi
+
+
+
+# Check whether --with-openmpflag was given.
+if test "${with_openmpflag+set}" = set; then :
+  withval=$with_openmpflag; OPENMPFLAG=$withval
+
+fi
+
+
+
+# Check whether --with-openmpthreads was given.
+if test "${with_openmpthreads+set}" = set; then :
+  withval=$with_openmpthreads; OPENMPTHREADS=$withval
+
+fi
+
+
 LIBS="-lm"
 
 IS_MINGW=0
@@ -5189,6 +5230,13 @@ fi
 else
 QD_LIBDIR=`pwd`/external/i/QD/lib
 QD_INCLUDEDIR=`pwd`/external/i/QD/include
+fi
+
+
+
+if test -n "$enable_openmp" && test "$enable_openmp" != "no" && test "$WITH_OPENMP" = "yes"; then
+OPENMPFLAGS="-fopenmp -DENABLE_OPENMP -DNUM_OF_THREADS=$OPENMPTHREADS"
+OPENMPLIB=-lgomp
 fi
 
 

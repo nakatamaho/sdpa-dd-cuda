@@ -37,14 +37,6 @@ void Rgemm_gpu(const char *transa, const char *transb, mpackint m, mpackint n, m
     nota = Mlsame_dd(transa, "N");
     notb = Mlsame_dd(transb, "N");
 
-    cudaChannelFormatDesc channelDesc = cudaCreateChannelDesc(32, 32, 32, 32, cudaChannelFormatKindSigned);
-    // bind texture memory
-    rc = cudaBindTexture(0, tex_x_double_A, Adev, channelDesc);
-        Is_cuda_Rgemm_error(rc, "could not bind to texture A", m, n, k, lda, ldb, ldc);
-
-    rc = cudaBindTexture(0, tex_x_double_B, Bdev, channelDesc);
-        Is_cuda_Rgemm_error(rc, "could not bind to texture B", m, n, k, lda, ldb, ldc);
-
     if (notb) {
         if (nota) {
 	    //Form C := alpha*A*B + beta*C.
@@ -90,11 +82,6 @@ void Rgemm_gpu(const char *transa, const char *transb, mpackint m, mpackint n, m
             }
         }
     }
-    //unbind texture
-    rc = cudaUnbindTexture(tex_x_double_A);
-        Is_cuda_Rgemm_error(rc, "cudaUnbindTexture A error", m, n, k, lda, ldb, ldc);
-    rc = cudaUnbindTexture(tex_x_double_B);
-        Is_cuda_Rgemm_error(rc, "cudaUnbindTexture B error", m, n, k, lda, ldb, ldc);
-    cudaThreadSynchronize();
+//    cudaThreadSynchronize();
 }
 
