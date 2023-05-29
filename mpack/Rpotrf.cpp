@@ -92,6 +92,7 @@ Rpotrf(const char *uplo, mpackint n, dd_real * A, mpackint lda, mpackint *info)
 	return;
 
 //Determine the block size for this environment.
+    nb = iMlaenv_dd(1, "Rpotrf", uplo, n, -1, -1, -1);
     if (nb <= 1 || nb >= n) {
 //Use unblocked code.
 	Rpotf2(uplo, n, A, lda, info);
