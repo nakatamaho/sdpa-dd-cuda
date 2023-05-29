@@ -152,30 +152,6 @@ void Rgemm_X(const char *transa, const char *transb, mpackint m, mpackint n, mpa
 	return;
     }
 
-    //allocate device memory for GPU
-    dd_real *Adev, *Bdev, *Cdev;
-    int size_A, size_B, size_C;
-    if (nota)
-	size_A = lda * k - (lda - m);
-    else
-	size_A = lda * m - (lda - k);
-    if (notb)
-	size_B = ldb * n - (ldb - k);
-    else
-	size_B = ldb * k - (ldb - n);
-    size_C = ldc * n - (ldc - m);
-    rc = cudaMalloc((void **) &Adev, size_A * sizeof(dd_real));
-        Is_cuda_Rgemm_error(rc, "cudaMalloc A error", m, n, k, lda, ldb, ldc);
-    rc = cudaMalloc((void **) &Bdev, size_B * sizeof(dd_real));
-        Is_cuda_Rgemm_error(rc, "cudaMalloc B error", m, n, k, lda, ldb, ldc);
-    rc = cudaMalloc((void **) &Cdev, size_C * sizeof(dd_real));
-        Is_cuda_Rgemm_error(rc, "cudaMalloc C error", m, n, k, lda, ldb, ldc);
-    rc = cudaMemcpy(Adev, A, size_A * sizeof(dd_real), cudaMemcpyHostToDevice);
-        Is_cuda_Rgemm_error(rc, "cudaMemcpy A error", m, n, k, lda, ldb, ldc);
-    rc = cudaMemcpy(Bdev, B, size_B * sizeof(dd_real), cudaMemcpyHostToDevice);
-        Is_cuda_Rgemm_error(rc, "cudaMemcpy B error", m, n, k, lda, ldb, ldc);
-    rc = cudaMemcpy(Cdev, C, size_C * sizeof(dd_real), cudaMemcpyHostToDevice);
-        Is_cuda_Rgemm_error(rc, "cudaMemcpy C error", m, n, k, lda, ldb, ldc);
 
 //And when alpha == 0.0
     if (dd_eq(alpha, Zero)) {
@@ -194,6 +170,33 @@ void Rgemm_X(const char *transa, const char *transb, mpackint m, mpackint n, mpa
 	}
 	return;
     }
+
+    //allocate device memory for GPU
+    dd_real *Adev, *Bdev, *Cdev;
+    int size_A, size_B, size_C;
+    if (nota)
+	size_A = lda * k - (lda - m);
+    else
+	size_A = lda * m - (lda - k);
+    if (notb)
+	size_B = ldb * n - (ldb - k);
+    else
+	size_B = ldb * k - (ldb - n);
+    size_C = ldc * n - (ldc - m);
+
+    rc = cudaMalloc((void **) &Adev, size_A * sizeof(dd_real));
+        Is_cuda_Rgemm_error(rc, "cudaMalloc A error", m, n, k, lda, ldb, ldc);
+    rc = cudaMalloc((void **) &Bdev, size_B * sizeof(dd_real));
+        Is_cuda_Rgemm_error(rc, "cudaMalloc B error", m, n, k, lda, ldb, ldc);
+    rc = cudaMalloc((void **) &Cdev, size_C * sizeof(dd_real));
+        Is_cuda_Rgemm_error(rc, "cudaMalloc C error", m, n, k, lda, ldb, ldc);
+
+    rc = cudaMemcpy(Adev, A, size_A * sizeof(dd_real), cudaMemcpyHostToDevice);
+        Is_cuda_Rgemm_error(rc, "cudaMemcpy A error", m, n, k, lda, ldb, ldc);
+    rc = cudaMemcpy(Bdev, B, size_B * sizeof(dd_real), cudaMemcpyHostToDevice);
+        Is_cuda_Rgemm_error(rc, "cudaMemcpy B error", m, n, k, lda, ldb, ldc);
+    rc = cudaMemcpy(Cdev, C, size_C * sizeof(dd_real), cudaMemcpyHostToDevice);
+        Is_cuda_Rgemm_error(rc, "cudaMemcpy C error", m, n, k, lda, ldb, ldc);
 
     Rgemm_gpu(transa, transb, m, n, k, alpha, Adev, lda, Bdev, ldb, beta, Cdev, ldc);
 
