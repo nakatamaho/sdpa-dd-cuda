@@ -39,6 +39,7 @@ an m by k matrix, op(B) a k by n matrix and C an m by n matrix.
 */
 
 #include <iostream>
+#include <iomanip>
 #include <stdio.h>
 #include "mpack/mpack_config.h"
 
@@ -250,6 +251,7 @@ void Rgemm_X(const char *transa, const char *transb, mpackint m, mpackint n, mpa
 
 	
     ops_counter += (double)m*(double)n*(double)k;
+    std::cerr << std::setprecision(10);
     std::cerr << "total flops " << ops_counter << "\n";
 
     return;
