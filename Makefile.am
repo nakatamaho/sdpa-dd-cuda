@@ -1,6 +1,8 @@
 bin_PROGRAMS = sdpa_dd
 
 #nVidia settings
+# compute_70/sm_70 is for Volta
+# compute_90/sm_80 is for Hopper
 NVCCFLAGS = -gencode arch=compute_70,code=sm_70 -m64 -O3 --ptxas-options=-v -I/usr/local/cuda/include -I./mpack -I. -I$(QD_INCLUDEDIR)
 if ENABLE_SLOPPY_MUL
 NVCCFLAGS += -DSLOPPY_MUL

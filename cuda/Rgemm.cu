@@ -240,19 +240,5 @@ void Rgemm_X(const char *transa, const char *transb, mpackint m, mpackint n, mpa
     rc = cudaMemcpy(C, Cdev, size_C * sizeof(dd_real), cudaMemcpyDeviceToHost);
         Is_cuda_Rgemm_error(rc, "cudaMemcpy C error", m, n, k, lda, ldb, ldc);
 
-	/*
-       rc = cudaFree(Adev);
-        Is_cuda_Rgemm_error(rc, "cudaFree A error", m, n, k, lda, ldb, ldc);
-    rc = cudaFree(Bdev);
-        Is_cuda_Rgemm_error(rc, "cudaFree B error", m, n, k, lda, ldb, ldc);
-    rc = cudaFree(Cdev);
-        Is_cuda_Rgemm_error(rc, "cudaFree C error", m, n, k, lda, ldb, ldc);
-	*/
-
-	
-    ops_counter += (double)m*(double)n*(double)k;
-    std::cerr << std::setprecision(10);
-    std::cerr << "total flops " << ops_counter << "\n";
-
     return;
 }

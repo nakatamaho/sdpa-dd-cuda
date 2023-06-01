@@ -394,7 +394,7 @@ CSCOPE = cscope
 DIST_SUBDIRS = $(SUBDIRS)
 am__DIST_COMMON = $(srcdir)/Makefile.in AUTHORS COPYING ChangeLog \
 	INSTALL NEWS README compile config.guess config.sub depcomp \
-	install-sh ltmain.sh missing
+	install-sh missing
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
 distdir = $(PACKAGE)-$(VERSION)
 top_distdir = $(distdir)
@@ -549,6 +549,8 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 
 #nVidia settings
+# compute_70/sm_70 is for Volta
+# compute_90/sm_80 is for Hopper
 NVCCFLAGS = -gencode arch=compute_70,code=sm_70 -m64 -O3 \
 	--ptxas-options=-v -I/usr/local/cuda/include -I./mpack -I. \
 	-I$(QD_INCLUDEDIR) $(am__append_1) $(am__append_2)
