@@ -25,12 +25,3 @@ cd ${TOPDIR}/SDPA-BINARY128_BENCH
 rm -rf SDPLIB
 git clone https://github.com/vsdp/SDPLIB.git
 
-PROBLEMS="gpp500-4.dat-s"
-
-for problem in $PROBLMES; do
-    cd ${TOPDIR}/SDPA-BINARY128_BENCH/sdpa-dd-cuda
-    _outfile=`basename $problem`
-     outfile="${_outfile%.*}.out"
-    echo "./sdpa_dd -ds $problem -o $out"
-done
-
