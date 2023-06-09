@@ -20,6 +20,16 @@ autoreconf --force --install
 ./configure --enable-openmp=yes --enable-shared=yes
 make -j4
 
+
+cd ${TOPDIR}/SDPA-BINARY128_BENCH
+rm -rf sdpa-binary128
+git clone https://github.com/nakatamaho/sdpa-binary128.git
+cd sdpa-binary128
+aclocal ; autoconf ; automake --add-missing
+autoreconf --force --install
+./configure --enable-openmp=yes --enable-shared=yes
+make -j4
+
 #### download SDPLIB ####
 cd ${TOPDIR}/SDPA-BINARY128_BENCH
 rm -rf SDPLIB
