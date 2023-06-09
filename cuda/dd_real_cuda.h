@@ -57,8 +57,9 @@ inline __device__ void dd_mul(const dd_real &a, const dd_real &b, dd_real &c)
 
     p = __dmul_rn(a.x[0], b.x[0]);
     e = __fma_rn(a.x[0], b.x[0], -1.0 *  p);
-    e = e + (__dmul_rn(a.x[0],b.x[1]) + __dmul_rn(a.x[1],b.x[0]));
-
+    //    e = e + (__dmul_rn(a.x[0],b.x[1]) + __dmul_rn(a.x[1],b.x[0]));
+    e = e + __fma_rn ( a.x[1], b.x[0],  __dmul_rn(a.x[0],b.x[1]));
+    
     c.x[0] = p + e;
     c.x[1] = e - (c.x[0] - p);
 }
